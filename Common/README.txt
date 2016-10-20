@@ -1,0 +1,1 @@
+We will have our sql lite database, embeded scrypts and our class with database queries here.
