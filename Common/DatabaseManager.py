@@ -58,6 +58,15 @@ class DatabaseManager:
         conn.close()
         return temperature
 
+    def selectAverageLastFive(self):
+        conn = sqlite3.connect(self.databasePath)
+
+        cursor = conn.execute("SELECT AVG(temperature) FROM (SELECT temperature FROM temp ORDER BY dtime DESC LIMIT 5)")
+        avg = cursor.fetchone()[0]
+
+        conn.close()
+        return avg
+
     def selectConfig(self):
         conn = sqlite3.connect(self.databasePath)
 
