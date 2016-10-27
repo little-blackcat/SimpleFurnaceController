@@ -52,8 +52,6 @@ class DatabaseManager:
         for c in cursor:
             temperature = int(c[0])
 
-        #dt = datetime.datetime.strptime(row[0], self.formatString)
-
         conn.commit()
         conn.close()
         return temperature
@@ -67,27 +65,26 @@ class DatabaseManager:
         conn.close()
         return avg
 
-    def selectConfig(self):
+    def selectMinAndMaxTempFromConf(self):
         conn = sqlite3.connect(self.databasePath)
 
-        cursor = conn.execute("SELECT desiredTemp FROM conf");
+        cursor = conn.execute("SELECT minTemp, maxTemp FROM conf");
 
-        desiredTemperature = 0
-
-        for c in cursor:
-            desiredTemperature = c[0]
-
+        row = cursor.fetchone()
+        minTemp = row[0]
+        maxTemp = row[1]
 
         conn.commit()
         conn.close()
-        return desiredTemperature
 
-    def updateConfig(self, newDesiredTemperature):
+        return minTemp, maxTemp
+
+    def updateConfig(self, newMinTemperature, newMaxTemperature):
         conn = sqlite3.connect(self.databasePath)
 
         conn.execute("DELETE FROM conf")
 
-        conn.execute("INSERT INTO conf VALUES({})".format(newDesiredTemperature))
+        conn.execute("INSERT INTO conf VALUES({}, {})".format(newMinTemperature, newMaxTemperature))
 
         conn.commit()
         conn.close()
