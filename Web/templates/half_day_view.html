@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+    <title>This is document title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="static/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<script src ="static/jquery-3.1.1.min.js"></script>
+<script src ="static/bootstrap.min.js"></script>
+
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li><a href="/">Home</a></li>
+        <li class="active"><a href="/half-day">half-day</a></li>
+        <li><a href="/hour">hour</a></li>
+    </ul>
+</div>
+<style>
+    .container-canvas {
+        /* This could be done in one single declaration. See the extended sample. */
+        margin-right: auto;
+        margin-left: auto;
+        width: 800px;
+    }
+</style>
+<div class="container-canvas">
+    <canvas id="chartCanvas"></canvas>
+</div>
+<script src="static/Chart.min.js"></script>
+<script src="static/main.js"></script>
+<script src="static/halfDay.js"></script>
+</body>
+</html>
