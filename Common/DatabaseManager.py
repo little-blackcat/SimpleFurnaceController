@@ -78,6 +78,30 @@ class DatabaseManager:
 
         return minTemp, maxTemp
         
+    def selectMinTempFromConf(self):
+        conn = sqlite3.connect(self.databasePath)
+
+        cursor = conn.execute("SELECT minTemp FROM conf");
+        row = cursor.fetchone()
+        minTemp = row[0]
+        
+        conn.commit()
+        conn.close()
+
+        return minTemp
+        
+    def selectMaxTempFromConf(self):
+        conn = sqlite3.connect(self.databasePath)
+
+        cursor = conn.execute("SELECT maxTemp FROM conf");
+        row = cursor.fetchone()
+        maxTemp = row[0]
+        
+        conn.commit()
+        conn.close()
+
+        return maxTemp
+        
     def selectFrequencyFromConf(self):
         conn = sqlite3.connect(self.databasePath)
 

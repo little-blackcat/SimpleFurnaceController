@@ -1,16 +1,16 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, QGridLayout, QLineEdit, QLabel, QSizePolicy, QSpinBox
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, QGridLayout, QLineEdit, QLabel, QSizePolicy, QSpinBox, QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import pyqtSlot
 from DatabaseManager import DatabaseManager
 
+db = DatabaseManager("../Common/database.db")
 
 class SimpleDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.initUI()
 
-        self.db = DatabaseManager("../Common/database.db")
 
     def initUI(self):
 
@@ -26,9 +26,9 @@ class SimpleDialog(QDialog):
         self.horizontalGroupBox = QGroupBox("")
         layout = QGridLayout()
 
-        layout.setColumnStretch(1, 3)
-        layout.setColumnStretch(2, 3)
-        layout.setColumnStretch(3, 3)
+        layout.setColumnStretch(1, 5)
+        layout.setColumnStretch(2, 5)
+        layout.setColumnStretch(3, 5)
 
         self.minTemperatureL = QLabel("Temperatura uruchamiania grzałki: ", self)
         self.minTemperatureL.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
@@ -45,12 +45,15 @@ class SimpleDialog(QDialog):
 
         self.minTemperatureE = QSpinBox(self)
         self.minTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.minTemperatureE.setValue(db.selectMinTempFromConf())
 
         self.maxTemperatureE = QSpinBox(self)
         self.maxTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.maxTemperatureE.setValue(db.selectMaxTempFromConf())
 
         self.temperatureReadingFrequencyE = QSpinBox(self)
         self.temperatureReadingFrequencyE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.temperatureReadingFrequencyE.setValue(db.selectFrequencyFromConf())
 
         self.minTemperatureB = QPushButton("Zapisz", self)
         self.minTemperatureB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
@@ -84,17 +87,17 @@ class SimpleDialog(QDialog):
 
     def onSaveMinTemperature(self):
         minTemperatureValue = self.minTemperatureE.value()
-        self.db.updateMinTemp(minTemperatureValue)
-        print('min', minTemperatureValue)
+        db.updateMinTemp(minTemperatureValue)
+        print(minTemperatureValue)
 
     def onSaveMaxTemperature(self):
         maxTemperatureValue = self.maxTemperatureE.value()
         print(maxTemperatureValue)
-        self.db.updateMaxTemp(maxTemperatureValue)
+        db.updateMaxTemp(maxTemperatureValue)
 
     def onSaveTemperatureReadingFrequency(self):
         temperatureReadingFrequency = self.temperatureReadingFrequencyE.value()
-        self.db.updateFrequency(temperatureReadingFrequency)
+        db.updateFrequency(temperatureReadingFrequency)
         print(temperatureReadingFrequency)
 
 if __name__ == '__main__':
