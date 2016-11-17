@@ -36,7 +36,6 @@ class DatabaseManager:
             datetime_data.append(dt)
             temperature_data.append(int(row[1]))
 
-
         conn.commit()
         conn.close()
         return datetime_data, temperature_data
@@ -78,6 +77,18 @@ class DatabaseManager:
         conn.close()
 
         return minTemp, maxTemp
+        
+    def selectFrequencyFromConf(self):
+        conn = sqlite3.connect(self.databasePath)
+
+        cursor = conn.execute("SELECT frequency FROM conf");
+
+        frequency = cursor.fetchone()[0]
+
+        conn.commit()
+        conn.close()
+
+        return frequency
 
     def updateConfig(self, newMinTemperature, newMaxTemperature):
         conn = sqlite3.connect(self.databasePath)
@@ -86,6 +97,30 @@ class DatabaseManager:
 
         conn.execute("INSERT INTO conf VALUES({}, {})".format(newMinTemperature, newMaxTemperature))
 
+        conn.commit()
+        conn.close()
+        
+    def updateMinTemp(self, newMinTemperature):
+        conn = sqlite3.connect(self.databasePath)
+        
+        conn.execute("UPDATE conf SET minTemp={}".format(newMinTemperature))
+        
+        conn.commit()
+        conn.close()
+        
+    def updateMaxTemp(self, newMaxTemperature):
+        conn = sqlite3.connect(self.databasePath)
+        
+        conn.execute("UPDATE conf SET maxTemp={}".format(newMaxTemperature))
+        
+        conn.commit()
+        conn.close()
+        
+    def updateFrequency(self, newFrequency):
+        conn = sqlite3.connect(self.databasePath)
+        
+        conn.execute("UPDATE conf SET frequency={}".format(newFrequency))
+        
         conn.commit()
         conn.close()
 
