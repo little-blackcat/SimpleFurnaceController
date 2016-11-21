@@ -114,12 +114,12 @@ class DatabaseManager:
 
         return frequency
 
-    def updateConfig(self, newMinTemperature, newMaxTemperature):
+    def updateConfig(self, newMinTemperature, newMaxTemperature, newFrequency):
         conn = sqlite3.connect(self.databasePath)
 
         conn.execute("DELETE FROM conf")
 
-        conn.execute("INSERT INTO conf VALUES({}, {})".format(newMinTemperature, newMaxTemperature))
+        conn.execute("INSERT INTO conf VALUES({}, {}, {})".format(newMinTemperature, newMaxTemperature, newFrequency))
 
         conn.commit()
         conn.close()
