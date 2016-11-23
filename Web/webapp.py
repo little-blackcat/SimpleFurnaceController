@@ -6,7 +6,7 @@ from GroupAverage import groupAndAverage
 
 app = Flask(__name__)
 
-db = DatabaseManager("../Common/database.db")
+db = DatabaseManager("/home/pi/sfc/Common/database.db")
 
 @app.route('/')
 def home_view():
@@ -60,4 +60,5 @@ def _ajax_chart_last_hour_():
 
     return jsonify(isTempsInDatabase=True, minuteLabel = labels, temps = averages)
 
-
+if __name__ == '__main__':
+	app.run(host='0.0.0.0', port=8080)

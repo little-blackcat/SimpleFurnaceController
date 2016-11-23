@@ -4,7 +4,7 @@ from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import pyqtSlot
 from DatabaseManager import DatabaseManager
 
-db = DatabaseManager("../Common/database.db")
+db = DatabaseManager("/home/pi/sfc/Common/database.db")
 '''
 class SimpleDialog(QDialog):
     def __init__(self):
@@ -20,7 +20,8 @@ class SimpleDialog(QDialog):
         windowLayout.addWidget(self.horizontalGroupBox)
         self.setLayout(windowLayout)
 
-        self.show()
+        #self.show()
+        self.showFullScreen()
 
     def createGridLayout(self):
         self.horizontalGroupBox = QGroupBox("")
