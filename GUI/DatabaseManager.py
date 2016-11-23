@@ -54,6 +54,26 @@ class DatabaseManager:
         conn.commit()
         conn.close()
         return temperature
+        
+    def selectLastTenTemperatures(self):
+        
+        conn = sqlite3.connect(self.databasePath)
+        
+        cursor = conn.execute("SELECT * FROM temp ORDER BY dtime DESC LIMIT 10")
+
+        datetime_data = []
+        temperature_data = []
+
+        for row in cursor:
+            dt = datetime.datetime.strptime(row[0], self.formatString)
+            datetime_data.append(dt)
+            temperature_data.append(int(row[1]))
+
+        conn.commit()
+        conn.close()
+        return datetime_data, temperature_data
+        
+        
 
     def selectAverageLastFive(self):
         conn = sqlite3.connect(self.databasePath)
@@ -77,26 +97,26 @@ class DatabaseManager:
         conn.close()
 
         return minTemp, maxTemp
-
+        
     def selectMinTempFromConf(self):
         conn = sqlite3.connect(self.databasePath)
 
         cursor = conn.execute("SELECT minTemp FROM conf");
         row = cursor.fetchone()
         minTemp = row[0]
-
+        
         conn.commit()
         conn.close()
 
         return minTemp
-
+        
     def selectMaxTempFromConf(self):
         conn = sqlite3.connect(self.databasePath)
 
         cursor = conn.execute("SELECT maxTemp FROM conf");
         row = cursor.fetchone()
         maxTemp = row[0]
-
+        
         conn.commit()
         conn.close()
 
