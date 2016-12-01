@@ -16,6 +16,12 @@ function ajax_get_temps(){
                 if(chartIsCreated) update_chart(hourLabel, temps, 12);
                 else {
                     create_chart(hourLabel, temps);
+			chart.options.scales.yAxes[0].scaleLabel.labelString = "temperature"                    
+			chart.options.scales.yAxes[0].scaleLabel.display = true;
+						
+			chart.options.scales.xAxes[0].scaleLabel.labelString = "clock hour" 
+			chart.options.scales.xAxes[0].scaleLabel.display = true;
+
                     chartIsCreated = true;
                 }
             }
