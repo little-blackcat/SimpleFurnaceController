@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 db = DatabaseManager("/home/pi/sfc/Common/database.db")
 
+#db = DatabaseManager("/home/michal/Git/SimpleFurnaceController/Common/database.db")
+
 @app.route('/')
 def home_view():
     return render_template('home_view.html')
@@ -24,11 +26,13 @@ def hour_view():
 def _ajax_chart_hours_():
     now = datetime.datetime.now()
     before = datetime.datetime.now() - datetime.timedelta(hours=12)
-
     dtimes, temps = db.selectTemperatureBetween(before, now)
 
     if(len(dtimes) == 0):
         print("ERROR")
+        print("now: " + now.strftime(db.formatString) + "\n")
+        print("before: " + before.strftime(db.formatString) + "\n")
+
         return jsonify(isTempsInDatabase=False)
 
     hours = []
@@ -49,6 +53,10 @@ def _ajax_chart_last_hour_():
 
     if(len(dtimes) == 0):
         print("ERROR")
+
+        print("now: " + now.strftime(db.formatString) + "\n")
+        print("before: " + before.strftime(db.formatString) + "\n")
+
         return jsonify(isTempsInDatabase=False)
 
     minutes = []

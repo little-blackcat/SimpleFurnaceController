@@ -17,7 +17,14 @@ function ajax_get_temps(){
                 if(chartIsCreated) update_chart(minuteLabel, temps, 60);
                 else {
                     create_chart(minuteLabel, temps);
-                    chartIsCreated = true;
+
+					chart.options.scales.yAxes[0].scaleLabel.labelString = "temperature"                    
+					chart.options.scales.yAxes[0].scaleLabel.display = true;
+						
+					chart.options.scales.xAxes[0].scaleLabel.labelString = "clock minute" 
+					chart.options.scales.xAxes[0].scaleLabel.display = true;
+
+					chartIsCreated = true;
                 }
             }
             else
