@@ -1,110 +1,34 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, QGridLayout, QLabel, QSizePolicy, QSpinBox, QTabWidget, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGroupBox, QDialog, QVBoxLayout, QGridLayout, QLabel, QSizePolicy, QSpinBox, QTabWidget, QTableWidget, QTableWidgetItem, QHeaderView
 from PyQt5.QtGui import QIcon, QFont
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, Qt
 from DatabaseManager import DatabaseManager
 
-#db = DatabaseManager("/home/pi/sfc/Common/database.db")
-db = DatabaseManager("../Common/database.db")
-'''
-class SimpleDialog(QDialog):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
+db = DatabaseManager("/home/pi/sfc1/SimpleFurnaceController/Common/database.db")
 
-
-    def initUI(self):
-
-        self.createGridLayout()
-
-        windowLayout = QVBoxLayout()
-        windowLayout.addWidget(self.horizontalGroupBox)
-        self.setLayout(windowLayout)
-
-        #self.show()
-        self.showFullScreen()
-
-    def createGridLayout(self):
-        self.horizontalGroupBox = QGroupBox("")
-        layout = QGridLayout()
-
-        layout.setColumnStretch(1, 5)
-        layout.setColumnStretch(2, 5)
-        layout.setColumnStretch(3, 5)
-
-        self.minTemperatureL = QLabel("Temperatura uruchamiania grzałki: ", self)
-        self.minTemperatureL.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.maxTemperatureL = QLabel("Temperatura wyłączania grzałki: ", self)
-        self.maxTemperatureL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        self.temperatureReadingFrequencyL = QLabel("Częstotliwość sczytywania temperatury:", self)
-        self.temperatureReadingFrequencyL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        self.minTemperatureE = QSpinBox(self)
-        self.minTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.minTemperatureE.setValue(db.selectMinTempFromConf())
-
-        self.maxTemperatureE = QSpinBox(self)
-        self.maxTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.maxTemperatureE.setValue(db.selectMaxTempFromConf())
-
-        self.temperatureReadingFrequencyE = QSpinBox(self)
-        self.temperatureReadingFrequencyE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.temperatureReadingFrequencyE.setValue(db.selectFrequencyFromConf())
-
-        self.minTemperatureB = QPushButton("Zapisz", self)
-        self.minTemperatureB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.minTemperatureB.clicked.connect(self.onSaveMinTemperature)
-
-        self.maxTemperatureB = QPushButton("Zapisz", self)
-        self.maxTemperatureB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.maxTemperatureB.clicked.connect(self.onSaveMaxTemperature)
-
-        self.temperatureReadingFrequencyB = QPushButton("Zapisz", self)
-        self.temperatureReadingFrequencyB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.temperatureReadingFrequencyB.clicked.connect(self.onSaveTemperatureReadingFrequency)
-
-        self.horizontalGroupBox.setLayout(layout)
-
-        layout.addWidget(self.minTemperatureL, 1, 1)
-        layout.addWidget(self.minTemperatureE, 1, 2)
-        layout.addWidget(self.minTemperatureB, 1, 3)
-
-        layout.addWidget(self.maxTemperatureL, 2, 1)
-        layout.addWidget(self.maxTemperatureE, 2, 2)
-        layout.addWidget(self.maxTemperatureB, 2, 3)
-
-        layout.addWidget(self.temperatureReadingFrequencyL, 3, 1)
-        layout.addWidget(self.temperatureReadingFrequencyE, 3, 2)
-        layout.addWidget(self.temperatureReadingFrequencyB, 3, 3)
-
-        self.setWindowTitle("Simple dialog")
-        self.setFocus()
-        self.showMaximized()
-
-    def onSaveMinTemperature(self):
-        minTemperatureValue = self.minTemperatureE.value()
-        db.updateMinTemp(minTemperatureValue)
-        print(minTemperatureValue)
-
-    def onSaveMaxTemperature(self):
-        maxTemperatureValue = self.maxTemperatureE.value()
-        print(maxTemperatureValue)
-        db.updateMaxTemp(maxTemperatureValue)
-
-    def onSaveTemperatureReadingFrequency(self):
-        temperatureReadingFrequency = self.temperatureReadingFrequencyE.value()
-        db.updateFrequency(temperatureReadingFrequency)
-        print(temperatureReadingFrequency)
-'''
+# debug db
+# db = DatabaseManager("../Common/database.db")
 
 class SimpleDialog(QDialog):
 
-    def __init__(self):
+    def __init__(self, width, height):
         super().__init__()
+
+        self.width = width;
+        self.height = height;
 
         oTabWidget = QTabWidget(self)
+        oTabWidget.setMinimumHeight(height)
+        oTabWidget.setMinimumWidth(width)
+        oTabWidget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+
         self.createTable()
+
+        spinBoxFont = QFont()
+        spinBoxFont.setPointSize(60)
+
+        labelFont = QFont()
+        labelFont.setPointSize(30)
 
         oPage1 = QWidget()
         oVBox1 = QGridLayout()
@@ -118,48 +42,66 @@ class SimpleDialog(QDialog):
         oTabWidget.addTab(oPage1,"Settings")
         oTabWidget.addTab(oPage2,"Last temperatures")
 
-        oTabWidget.setFixedSize(1920, 1080)
-
         oVBox1.setColumnStretch(1, 3)
         oVBox1.setColumnStretch(2, 3)
         oVBox1.setColumnStretch(3, 3)
 
+        # ----- MIN -----
         self.minTemperatureL = QLabel("Min temperature: ", self)
         self.minTemperatureL.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.maxTemperatureL = QLabel("Max temperature: ", self)
-        self.maxTemperatureL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-        self.temperatureReadingFrequencyL = QLabel("Temperature checking frequency:", self)
-        self.temperatureReadingFrequencyL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.minTemperatureL.setFont(labelFont)
 
         self.minTemperatureE = QSpinBox(self)
         self.minTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.minTemperatureE.setAlignment(Qt.AlignCenter)
+        self.minTemperatureE.setFont(spinBoxFont)
         self.minTemperatureE.setValue(db.selectMinTempFromConf())
-
-        self.maxTemperatureE = QSpinBox(self)
-        self.maxTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
-        self.maxTemperatureE.setValue(db.selectMaxTempFromConf())
-
-        self.temperatureReadingFrequencyE = QSpinBox(self)
-        self.temperatureReadingFrequencyE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.temperatureReadingFrequencyE.setValue(db.selectFrequencyFromConf())
 
         self.minTemperatureB = QPushButton("Save", self)
         self.minTemperatureB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.minTemperatureB.setFont(labelFont)
         self.minTemperatureB.clicked.connect(self.onSaveMinTemperature)
+
+        # ----- MAX -----
+        self.maxTemperatureL = QLabel("Max temperature: ", self)
+        self.maxTemperatureL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.maxTemperatureL.setFont(labelFont)
+
+        self.maxTemperatureE = QSpinBox(self)
+        self.maxTemperatureE.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.maxTemperatureE.setAlignment(Qt.AlignCenter)
+        self.maxTemperatureE.setFont(spinBoxFont)
+        self.maxTemperatureE.setValue(db.selectMaxTempFromConf())
 
         self.maxTemperatureB = QPushButton("Save", self)
         self.maxTemperatureB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.maxTemperatureB.setFont(labelFont)
         self.maxTemperatureB.clicked.connect(self.onSaveMaxTemperature)
+
+        # ----- FREQ -----
+        self.temperatureReadingFrequencyL = QLabel("Checking frequency:", self)
+        self.temperatureReadingFrequencyL.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.temperatureReadingFrequencyL.setFont(labelFont)
+
+        self.temperatureReadingFrequencyE = QSpinBox(self)
+        self.temperatureReadingFrequencyE.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.temperatureReadingFrequencyE.setAlignment(Qt.AlignCenter)
+        self.temperatureReadingFrequencyE.setFont(spinBoxFont)
+        self.temperatureReadingFrequencyE.setValue(db.selectFrequencyFromConf())
 
         self.temperatureReadingFrequencyB = QPushButton("Save", self)
         self.temperatureReadingFrequencyB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.temperatureReadingFrequencyB.setFont(labelFont)
         self.temperatureReadingFrequencyB.clicked.connect(self.onSaveTemperatureReadingFrequency)
 
+        # ----- REFRESH -----
         self.refreshTemperaturesB = QPushButton("Refresh", self)
         self.refreshTemperaturesB.setSizePolicy(QSizePolicy.Expanding,QSizePolicy.Expanding)
+        self.refreshTemperaturesB.setMaximumHeight(self.height/5)
+        self.refreshTemperaturesB.setFont(labelFont)
         self.refreshTemperaturesB.clicked.connect(self.onRefreshTemperatures)
 
+        # ----- TAB 1 -----
         oVBox1.addWidget(self.minTemperatureL, 1, 1)
         oVBox1.addWidget(self.minTemperatureE, 1, 2)
         oVBox1.addWidget(self.minTemperatureB, 1, 3)
@@ -172,19 +114,36 @@ class SimpleDialog(QDialog):
         oVBox1.addWidget(self.temperatureReadingFrequencyE, 3, 2)
         oVBox1.addWidget(self.temperatureReadingFrequencyB, 3, 3)
 
+        # ----- TAB 2 -----
         oVBox2.addWidget(self.refreshTemperaturesB)
 
-        self.showMaximized()
+        #self.showMaximized()
+        self.showFullScreen()
 
     def createTable(self):
-       # Create table
+        tableFont = QFont()
+        tableFont.setPointSize(20)
+
+        self.tableWidget = QTableWidget()
+        self.tableWidget.setRowCount(10)
+        for i in range(10):
+            self.tableWidget.setRowHeight(i, 40)
+
+        self.tableWidget.setColumnCount(2)
+        self.tableWidget.setColumnWidth(0, self.width/2)
+        self.tableWidget.setHorizontalHeaderLabels(['Date and time', 'Temperature'])
+        self.tableWidget.setFont(tableFont)
+
+        header = self.tableWidget.horizontalHeader()
+        header.setStretchLastSection(True)
+
+        self.updateTable()
+
+    def updateTable(self):
         datetime_Data = []
         temperature_data = []
         datetime_Data, temperature_data = db.selectLastTenTemperatures()
-        self.tableWidget = QTableWidget()
-        self.tableWidget.setRowCount(10)
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.setHorizontalHeaderLabels(['Date and time', 'Temperature'])
+
         self.tableWidget.setItem(0,0, QTableWidgetItem(datetime_Data[0].strftime("%B %d, %Y, %H:%M:%S")))
         self.tableWidget.setItem(1,0, QTableWidgetItem(datetime_Data[1].strftime("%B %d, %Y, %H:%M:%S")))
         self.tableWidget.setItem(2,0, QTableWidgetItem(datetime_Data[2].strftime("%B %d, %Y, %H:%M:%S")))
@@ -206,30 +165,31 @@ class SimpleDialog(QDialog):
         self.tableWidget.setItem(7,1, QTableWidgetItem(str(temperature_data[7])))
         self.tableWidget.setItem(8,1, QTableWidgetItem(str(temperature_data[8])))
         self.tableWidget.setItem(9,1, QTableWidgetItem(str(temperature_data[9])))
-        self.tableWidget.move(0,0)
-        self.tableWidget.resizeColumnsToContents()
+
 
     def onSaveMinTemperature(self):
         minTemperatureValue = self.minTemperatureE.value()
         db.updateMinTemp(minTemperatureValue)
-        print(minTemperatureValue)
+        #print(minTemperatureValue)
 
     def onSaveMaxTemperature(self):
         maxTemperatureValue = self.maxTemperatureE.value()
-        print(maxTemperatureValue)
+        #print(maxTemperatureValue)
         db.updateMaxTemp(maxTemperatureValue)
 
     def onSaveTemperatureReadingFrequency(self):
         temperatureReadingFrequency = self.temperatureReadingFrequencyE.value()
         db.updateFrequency(temperatureReadingFrequency)
-        print(temperatureReadingFrequency)
+        #print(temperatureReadingFrequency)
 
     def onRefreshTemperatures(self):
-        self.createTable()
+        self.updateTable()
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    dialog = SimpleDialog()
+    screen_resolution = app.desktop().screenGeometry()
+    width, height = screen_resolution.width(), screen_resolution.height()
+    dialog = SimpleDialog(width, height)
     app.exec_()
 

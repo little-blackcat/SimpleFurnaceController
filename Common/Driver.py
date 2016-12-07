@@ -9,7 +9,7 @@ from Heater import Heater
 class Driver:
     def __init__(self):
         self.scheduler = BackgroundScheduler()
-        self.db = DatabaseManager('/home/pi/sfc/Common/database.db')
+        self.db = DatabaseManager('/home/pi/sfc1/SimpleFurnaceController/Common/database.db')
         self.sensor = W1ThermSensor()
         self.heater = Heater()
 
